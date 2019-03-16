@@ -1,11 +1,11 @@
 Swoole Server Warm-Up
 =====================
 
-This library pre-warms [Swoole](https://www.swoole.co.uk/) web-server by visiting provided URLs on startup.
+This library pre-warms [Swoole](https://www.swoole.co.uk/) web-server by visiting given URLs on startup.
 
 It takes time for a web-server to reach its cruising level of performance after the startup.
 Server warm-up is recommended to avoid first clients experiencing slowness while simultaneously overloading a cold server.
-This library makes it trivial to automate crawling provided URLs to prime the server before use.
+This library makes it trivial to automate crawling of provided URLs to prime the server before use.
 
 **Features:**
 - Visit URLs on server startup
@@ -27,12 +27,16 @@ use Upscale\Swoole\Warmup;
 require 'vendor/autoload.php';
 
 $server = new \Swoole\Http\Server('127.0.0.1', 8080);
+$server->set([
+    'dispatch_mode' => 1,
+]);
 
-$serverState = 'cold';
-$server->on('request', function ($request, $response) use (&$serverState) {
+$workerState = 'cold';
+$server->on('request', function ($request, $response) use (&$workerState) {
+    $workerPid = getmypid();
     $response->header('Content-Type', 'text/plain');
-    $response->end("Served by $serverState server\n");
-    $serverState = 'warm';
+    $response->end("Served by $workerState worker process $workerPid\n");
+    $workerState = 'warm';
 });
 
 $crawler = new Warmup\Crawler($server, new Warmup\RequestFactory($server));
@@ -43,7 +47,7 @@ $crawler->browse([
 $server->start();
 ```
 
-## Implementation
+## Technique
 
 The warm-up mechanism is much more advanced than an ordinary HTTP crawler.
 First off, it dispatches requests before the server accepts any incoming connections.
