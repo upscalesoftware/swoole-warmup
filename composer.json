@@ -1,0 +1,24 @@
+{
+    "name": "upscale/swoole-warmup",
+    "description": "URL crawler to warm-up Swoole web-server",
+    "version": "1.0.0",
+    "keywords": [
+        "Swoole", "URL", "crawler", "prime", "performance",
+        "prewarm", "pre-warm", "warm", "warm-up", "warm up", "cold"
+    ],
+    "homepage": "https://github.com/upscalesoftware/swoole-warmup",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Upscale Software Team",
+            "email": "info@upscalesoftware.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "ext-swoole": "^4.0.0"
+    },
+    "autoload": {
+        "psr-4": {"Upscale\\Swoole\\Warmup\\": "src/"}
+    }
+}
