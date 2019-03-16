@@ -33,10 +33,12 @@ class Crawler
      * Visit given URLs and discard the responses
      * 
      * @param string[] $urls
+     * @throws \UnexpectedValueException
      */
     public function browse(array $urls)
     {
-        array_walk($urls, [$this, 'visit']);
+        $requests = array_map([$this->requestFactory, 'create'], $urls);
+        array_walk($requests, [$this, 'dispatch']);
     }
 
     /**
@@ -48,11 +50,23 @@ class Crawler
      */
     public function visit($url)
     {
+        $request = $this->requestFactory->create($url);
+        return $this->dispatch($request);
+    }
+
+    /**
+     * Dispatch a given request and fetch the response
+     *
+     * @param \Swoole\Http\Request $request
+     * @return \Swoole\Http\Response
+     * @throws \UnexpectedValueException
+     */
+    public function dispatch(\Swoole\Http\Request $request)
+    {
         $middleware = $this->server->onRequest;
         if (!is_callable($middleware)) {
             throw new \UnexpectedValueException('Server middleware has not been initialized yet.');
         }
-        $request = $this->requestFactory->create($url);
         $response = new Response();
         $middleware($request, $response);
         return $response;
