@@ -43,6 +43,7 @@ $crawler = new Warmup\Crawler($server, new Warmup\RequestFactory($server));
 $crawler->browse([
     'http://127.0.0.1:8080/',
 ]);
+unset($crawler);
 
 $server->start();
 ```
