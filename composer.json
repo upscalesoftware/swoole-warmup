@@ -1,7 +1,7 @@
 {
     "name": "upscale/swoole-warmup",
     "description": "URL crawler to warm-up Swoole web-server",
-    "version": "1.1.1",
+    "version": "1.2.0",
     "keywords": [
         "Swoole", "URL", "crawler", "prime", "performance",
         "prewarm", "pre-warm", "warm", "warm-up", "warm up", "cold"
@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
+        "php": ">=5.3",
         "ext-swoole": "^4.0.0",
         "upscale/swoole-reflection": "^1.0.0"
     },
