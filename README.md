@@ -55,7 +55,14 @@ First off, it dispatches requests before the server accepts any incoming connect
 Secondly, the dispatch is carried out internally avoiding the overhead of external HTTP requests.
 Finally, the warm-up is performed in the main process used as an exemplar for forking worker processes.
 The warm-up extends to all workers altogether and the optimization effects persist beyond the lifetime of worker processes.
-Swoole workers are subject to periodic restart according to the [`max_request` setting](https://www.swoole.co.uk/docs/modules/swoole-server/configuration#max_request) as a memory leak mitigation measure.
+Swoole workers are subject to periodic restart according to the [`max_request`](https://www.swoole.co.uk/docs/modules/swoole-server/configuration#max_request) setting as a memory leak mitigation measure.
+
+## Limitations
+
+Swoole allows to configure user and group ownership of worker processes via the settings [`user`](https://www.swoole.co.uk/docs/modules/swoole-server/configuration#user) and [`group`](https://www.swoole.co.uk/docs/modules/swoole-server/configuration#group) respectively.
+The warm-up is designed to run in the master process that can be owned by a different user, typically the `root` superuser.
+Process ownership mismatch can result in a state different from the one produced by an equivalent external HTTP request.
+This can cause the access permission issues of the application accessing files in the filesystem. 
 
 ## Contributing
 
