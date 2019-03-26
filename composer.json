@@ -15,9 +15,10 @@
         }
     ],
     "require": {
-        "php": ">=5.4",
-        "ext-swoole": "^4.0.0",
-        "upscale/swoole-reflection": "^1.0.0"
+        "php": ">=5.5",
+        "ext-posix": "*",
+        "ext-swoole": "^4.0",
+        "upscale/swoole-reflection": "^1.0"
     },
     "autoload": {
         "psr-4": {"Upscale\\Swoole\\Warmup\\": "src/"}

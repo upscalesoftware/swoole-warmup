@@ -10,6 +10,7 @@ This library makes it trivial to automate crawling of provided URLs to prime the
 **Features:**
 - Visit URLs on server startup
 - Warm-up all workers at once
+- Impersonate worker user/group
 - Restart workers in warm state
 
 ## Installation
@@ -29,14 +30,14 @@ require 'vendor/autoload.php';
 $server = new \Swoole\Http\Server('127.0.0.1', 8080);
 $server->set([
     'dispatch_mode' => 1,
+    'user' => '_www',
 ]);
 
-$workerState = 'cold';
-$server->on('request', function ($request, $response) use (&$workerState) {
-    $workerPid = getmypid();
+$state = 'cold';
+$server->on('request', function ($request, $response) use ($server, &$state) {
     $response->header('Content-Type', 'text/plain');
-    $response->end("Served by $workerState worker process $workerPid\n");
-    $workerState = 'warm';
+    $response->end("Served by $state worker $server->worker_id\n");
+    $state = 'warm';
 });
 
 $crawler = new Warmup\Crawler($server, new Warmup\RequestFactory($server));
@@ -57,12 +58,10 @@ Finally, the warm-up is performed in the main process used as an exemplar for fo
 The warm-up extends to all workers altogether and the optimization effects persist beyond the lifetime of worker processes.
 Swoole workers are subject to periodic restart according to the [`max_request`](https://www.swoole.co.uk/docs/modules/swoole-server/configuration#max_request) setting as a memory leak mitigation measure.
 
-## Limitations
-
 Swoole allows to configure user and group ownership of worker processes via the settings [`user`](https://www.swoole.co.uk/docs/modules/swoole-server/configuration#user) and [`group`](https://www.swoole.co.uk/docs/modules/swoole-server/configuration#group) respectively.
-The warm-up is designed to run in the master process that can be owned by a different user, typically the `root` superuser.
-Process ownership mismatch can result in a state different from the one produced by an equivalent external HTTP request.
-This can cause the access permission issues of the application accessing files in the filesystem. 
+The warm-up is meant to run in the master process that can be owned by a different user, typically the `root` superuser.
+Process ownership mismatch can cause the access permission issues of the application accessing files in the filesystem.
+The worker process privileges are detected automatically and the user/group is imitated for the duration of the warm-up.
 
 ## Contributing
 

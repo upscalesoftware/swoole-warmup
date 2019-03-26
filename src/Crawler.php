@@ -8,7 +8,7 @@ namespace Upscale\Swoole\Warmup;
 class Crawler
 {
     /**
-     * @var \Upscale\Swoole\Reflection\Http\Server
+     * @var \Swoole\Http\Server
      */
     protected $server;
 
@@ -25,7 +25,7 @@ class Crawler
      */
     public function __construct(\Swoole\Http\Server $server, RequestFactory $requestFactory)
     {
-        $this->server = new \Upscale\Swoole\Reflection\Http\Server($server);
+        $this->server = $server;
         $this->requestFactory = $requestFactory;
     }
 
@@ -63,9 +63,28 @@ class Crawler
      */
     public function dispatch(\Swoole\Http\Request $request)
     {
-        $middleware = $this->server->getMiddleware();
+        $server = new \Upscale\Swoole\Reflection\Http\Server($this->server);
+        $middleware = $server->getMiddleware();
+        $middleware = $this->sudo($middleware);
         $response = new Response();
         $middleware($request, $response);
         return $response;
+    }
+
+    /**
+     * Decorate a given middleware with the worker process privileges
+     *
+     * @param callable $middleware
+     * @return callable
+     * @throws \UnexpectedValueException
+     */
+    protected function sudo(callable $middleware)
+    {
+        $workerUser = isset($this->server->setting['user']) ? $this->server->setting['user'] : null;
+        $workerGroup = isset($this->server->setting['group']) ? $this->server->setting['group'] : null;
+        if ($workerUser || $workerGroup) {
+            $middleware = new PrivilegeDecorator($middleware, $workerUser, $workerGroup);
+        }
+        return $middleware;
     }
 }
