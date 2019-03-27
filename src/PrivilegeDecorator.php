@@ -28,9 +28,13 @@ class PrivilegeDecorator
      * @param callable $subject Middleware
      * @param string $user User name
      * @param string|null $group Group name
+     * @throws \UnexpectedValueException
      */
     public function __construct(callable $subject, $user, $group = null)
     {
+        if (!extension_loaded('posix')) {
+            throw new \UnexpectedValueException('Process control extension POSIX is missing or disabled.');
+        }
         $this->subject = $subject;
         $this->user = $user;
         $this->group = $group;
