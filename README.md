@@ -62,6 +62,7 @@ Swoole allows to configure user and group ownership of worker processes via the 
 The warm-up is meant to run in the master process that can be owned by a different user, typically the `root` superuser.
 Process ownership mismatch can cause the access permission issues of the application accessing files in the filesystem.
 The worker process privileges are detected automatically and the user/group is imitated for the duration of the warm-up.
+The process privilege emulation relies on the process control extension [POSIX](https://www.php.net/manual/en/book.posix.php) being installed and enabled. 
 
 ## Contributing
 
