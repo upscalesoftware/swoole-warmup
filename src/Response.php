@@ -75,11 +75,12 @@ class Response extends \Swoole\Http\Response
      * @param string $domain
      * @param bool $secure
      * @param bool $httponly
+     * @param bool $samesite
      */
     public function cookie(
-        $name, $value = null, $expires = null, $path = null, $domain = null, $secure = null, $httponly = null
+        $name, $value = null, $expires = null, $path = null, $domain = null, $secure = null, $httponly = null, $samesite = null
     ) {
-        $this->rawcookie($name, urlencode($value), $expires, $path, $domain, $secure, $httponly);
+        $this->rawcookie($name, urlencode($value), $expires, $path, $domain, $secure, $httponly, $samesite);
     }
 
     /**
@@ -90,9 +91,10 @@ class Response extends \Swoole\Http\Response
      * @param string $domain
      * @param bool $secure
      * @param bool $httponly
+     * @param bool $samesite
      */
     public function rawcookie(
-        $name, $value = null, $expires = null, $path = null, $domain = null, $secure = null, $httponly = null
+        $name, $value = null, $expires = null, $path = null, $domain = null, $secure = null, $httponly = null, $samesite = null
     ) {
         $this->cookies[] = [
             'name'      => $name,
@@ -102,6 +104,7 @@ class Response extends \Swoole\Http\Response
             'domain'    => $domain,
             'secure'    => $secure,
             'httponly'  => $httponly,
+            'samesite'  => $samesite,
         ];
     }
     
