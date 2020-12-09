@@ -69,32 +69,60 @@ class Response extends \Swoole\Http\Response
     
     /**
      * @param string $name
-     * @param string $value
-     * @param int $expires
-     * @param string $path
-     * @param string $domain
-     * @param bool $secure
-     * @param bool $httponly
-     * @param bool $samesite
+     * @param string|null $value
+     * @param int|null $expires
+     * @param string|null $path
+     * @param string|null $domain
+     * @param bool|null $secure
+     * @param bool|null $httponly
+     * @param string|null $samesite
+     * @param string|null $priority
      */
     public function cookie(
-        $name, $value = null, $expires = null, $path = null, $domain = null, $secure = null, $httponly = null, $samesite = null
+        $name,
+        $value = null,
+        $expires = null,
+        $path = null,
+        $domain = null,
+        $secure = null,
+        $httponly = null,
+        $samesite = null,
+        $priority = null
     ) {
-        $this->rawcookie($name, urlencode($value), $expires, $path, $domain, $secure, $httponly, $samesite);
+        $this->rawcookie(
+            $name,
+            urlencode($value),
+            $expires,
+            $path,
+            $domain,
+            $secure,
+            $httponly,
+            $samesite,
+            $priority
+        );
     }
 
     /**
      * @param string $name
-     * @param string $value
-     * @param int $expires
-     * @param string $path
-     * @param string $domain
-     * @param bool $secure
-     * @param bool $httponly
-     * @param bool $samesite
+     * @param string|null $value
+     * @param int|null $expires
+     * @param string|null $path
+     * @param string|null $domain
+     * @param bool|null $secure
+     * @param bool|null $httponly
+     * @param string|null $samesite
+     * @param string|null $priority
      */
     public function rawcookie(
-        $name, $value = null, $expires = null, $path = null, $domain = null, $secure = null, $httponly = null, $samesite = null
+        $name,
+        $value = null,
+        $expires = null,
+        $path = null,
+        $domain = null,
+        $secure = null,
+        $httponly = null,
+        $samesite = null,
+        $priority = null
     ) {
         $this->cookies[] = [
             'name'      => $name,
@@ -105,6 +133,7 @@ class Response extends \Swoole\Http\Response
             'secure'    => $secure,
             'httponly'  => $httponly,
             'samesite'  => $samesite,
+            'priority'  => $priority,
         ];
     }
     
